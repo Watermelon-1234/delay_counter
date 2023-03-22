@@ -1,0 +1,117 @@
+<html>
+<head>
+    <style>
+        #box {
+            width: 200px;
+            height: 200px;
+            background-color: green;
+            margin: auto;
+            display: none;
+        }
+        #start {
+            width: 100px;
+            height: 50px;
+            background-color: blue;
+            color: white;
+            margin: auto;
+            display: block;
+        }
+        #countdown {
+            font-size: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+    <button id="start">開始</button>
+    <p id="countdown"></p>
+    <p id="result"></p>
+    <p id="instruction">這是一個測量觸控延遲的網頁。請按下開始按鈕，然後等待三秒。當綠色方塊出現時，請盡快點擊它。然後會顯示您的觸控延遲秒數(精確到小數後三位)。您可以重複這個測試多次，看看您的平均延遲是多少。</p>
+    <script>
+        // Get the elements
+        var box = document.getElementById("box");
+        var start = document.getElementById("start");
+        var countdown = document.getElementById("countdown");
+        var result = document.getElementById("result");
+        var instruction = document.getElementById("instruction");
+
+        // Define some variables
+        var startTime; // The time when the box appears
+        var endTime; // The time when the user touches the box
+        var delay; // The difference between endTime and startTime
+
+        // Define a function to show the box after 3 seconds with countdown
+        function showBox() {
+            // Set the countdown text to 3
+            countdown.textContent = "3";
+
+            // Set a timeout to decrease the countdown by 1 after 1 second
+            setTimeout(function() {
+                // Set the countdown text to 2
+                countdown.textContent = "2";
+                
+                // Set another timeout to decrease the countdown by 1 after another second
+                setTimeout(function() {
+                    // Set the countdown text to 1
+                    countdown.textContent = "1";
+
+                    // Set another timeout to show the box and clear the countdown after another second
+                    setTimeout(function() {
+                        // Show the box
+                        box.style.display = "block";
+
+                        // Clear the countdown text
+                        countdown.textContent = "";
+
+                        // Record the current time as startTime
+                        startTime = new Date().getTime();
+                    }, 1000);
+                }, 1000);
+                
+            }, 1000);
+            
+        }
+
+        // Define a function to handle the touch event on the box
+        function touchBox(event) {
+            // Prevent the default behavior of the touch event
+            event.preventDefault();
+
+            // Hide the box
+            box.style.display = "none";
+
+            // Record the current time as endTime
+            endTime = new Date().getTime();
+
+            // Calculate the delay as endTime minus startTime, and round it to three decimal places
+            delay = (endTime - startTime) / 1000;
+            delay = Math.round(delay * 1000) / 1000;
+
+            // Display the delay on the result element
+            result.textContent = "您的觸控延遲是 " + delay + " 秒。";
+
+            // Enable start button again for next test 
+            start.disabled=false;
+        }
+
+        // Define a function to handle the click event on the start button
+        function startTest(event) {
+            // Disable start button to prevent multiple clicks
+            start.disabled=true;
+
+            // Clear result text 
+            result.textContent="";
+
+            // Call showBox function to begin test 
+            showBox();
+        }
+
+        // Add an event listener to the box element for touchstart event, and call touchBox function when it happens
+        box.addEventListener("click", touchBox);
+
+        // Add an event listener to the start button for click event, and call startTest function when it happens 
+        start.addEventListener("click",startTest);
+    </script>
+</body>
+</html>
